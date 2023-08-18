@@ -1,15 +1,33 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
   "pipeline": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+    "codegen": {
+      "cache": false
     },
-    "lint": {},
+    "build": {
+      "dependsOn": ["codegen", "^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**/*"]
+    },
     "dev": {
+      "dependsOn": ["codegen", "^build"],
       "cache": false,
       "persistent": true
+    },
+    "test:ci": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "test:visual:ci": {
+      "dependsOn": ["^build"]
+    },
+    "upload-source-maps": {
+      "dependsOn": ["build"]
+    },
+    "build-sitemaps": {
+      "dependsOn": ["^build"],
+      "cache": false
     }
   }
 }
